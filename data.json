@@ -3,11 +3,11 @@
     {
       "id": 1,
       "title": "Réunion CSE mensuelle",
-      "date": "2026-02-05",
-      "time": "14:00",
+      "date": "2026-01-28",
+      "time": "08:30",
       "type": "cse",
-      "location": "Salle de réunion A",
-      "description": "Ordre du jour : bilan économique, conditions de travail, questions diverses"
+      "location": "Salle de réunion batiment DIR",
+      "description": "Ordre du jour : ---"
     },
     {
       "id": 2,
