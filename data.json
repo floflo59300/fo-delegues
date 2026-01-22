@@ -1,0 +1,249 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "Réunion CSE mensuelle",
+      "date": "2026-02-05",
+      "time": "14:00",
+      "type": "cse",
+      "location": "Salle de réunion A",
+      "description": "Ordre du jour : bilan économique, conditions de travail, questions diverses"
+    },
+    {
+      "id": 2,
+      "title": "Formation Droit du travail",
+      "date": "2026-02-12",
+      "time": "09:00",
+      "type": "formation",
+      "location": "Centre FO - 141 avenue du Maine, Paris",
+      "description": "Formation sur les dernières évolutions du Code du travail"
+    },
+    {
+      "id": 3,
+      "title": "Assemblée Générale FO",
+      "date": "2026-02-20",
+      "time": "18:00",
+      "type": "ag",
+      "location": "Bourse du travail",
+      "description": "AG annuelle - Bilan et perspectives"
+    },
+    {
+      "id": 4,
+      "title": "Réunion CSE extraordinaire",
+      "date": "2026-03-01",
+      "time": "10:00",
+      "type": "cse",
+      "location": "Salle de réunion B",
+      "description": "Point sur le projet de réorganisation"
+    }
+  ],
+  "news": [
+    {
+      "id": 1,
+      "title": "Nouveaux barèmes indemnités kilométriques 2026",
+      "date": "2026-01-15",
+      "summary": "Les nouveaux barèmes sont publiés. Consultez la fiche pratique mise à jour."
+    },
+    {
+      "id": 2,
+      "title": "Victoire FO : prime de transport élargie",
+      "date": "2026-01-10",
+      "summary": "Grâce à l'action de FO, la prime de transport est désormais étendue à tous les salariés."
+    },
+    {
+      "id": 3,
+      "title": "Rappel : dépôt des heures de délégation",
+      "date": "2026-01-05",
+      "summary": "N'oubliez pas de déposer vos heures de délégation avant le 5 de chaque mois."
+    }
+  ],
+  "fiches": [
+    {
+      "id": 1,
+      "title": "Heures de délégation - Règles essentielles",
+      "content": "CRÉDIT D'HEURES MENSUEL :\n• Titulaires CSE : 10 à 34h selon effectif\n• Délégués syndicaux : 12 à 24h selon effectif\n• RSS : 4h/mois\n\nRÈGLES D'UTILISATION :\n• Liberté de déplacement dans et hors entreprise\n• Pas d'autorisation préalable (sauf bon de délégation)\n• Maintien du salaire\n• Report possible (dans la limite de 12 mois)\n• Mutualisation possible entre élus\n\nCONTESTATION :\nL'employeur ne peut contester qu'a posteriori, devant le CPH."
+    },
+    {
+      "id": 2,
+      "title": "Procédure disciplinaire - Délais à connaître",
+      "content": "CONVOCATION À ENTRETIEN :\n• Délai de 5 jours ouvrables minimum entre convocation et entretien\n• Mention obligatoire du droit à assistance\n\nNOTIFICATION SANCTION :\n• Minimum 2 jours ouvrables après entretien\n• Maximum 1 mois après entretien\n\nPRESCRIPTION :\n• Faute : 2 mois à compter de la connaissance des faits\n• Sanction antérieure : ne peut être invoquée au-delà de 3 ans\n\nDROIT D'ASSISTANCE :\n• Salarié protégé ou représentant du personnel\n• Conseiller extérieur si pas de CSE"
+    },
+    {
+      "id": 3,
+      "title": "Licenciement - Points de vigilance",
+      "content": "ENTRETIEN PRÉALABLE :\n• Convocation par LRAR ou remise en main propre\n• 5 jours ouvrables de délai minimum\n• Droit à assistance obligatoirement mentionné\n\nNOTIFICATION :\n• 2 jours ouvrables minimum après entretien\n• 1 mois maximum (sauf faute grave)\n• Motifs précis et matériellement vérifiables\n\nPRÉAVIS :\n• < 6 mois ancienneté : selon convention\n• 6 mois à 2 ans : 1 mois\n• > 2 ans : 2 mois\n\nINDEMNITÉS :\n• Légale : 1/4 mois par année (10 ans), puis 1/3\n• Vérifier convention collective (souvent plus favorable)"
+    },
+    {
+      "id": 4,
+      "title": "Harcèlement - Que faire ?",
+      "content": "DÉFINITION HARCÈLEMENT MORAL (L.1152-1) :\nAgissements répétés ayant pour objet ou effet une dégradation des conditions de travail susceptible de porter atteinte aux droits, à la dignité, à la santé physique ou mentale.\n\nACTIONS POSSIBLES :\n1. Consigner par écrit (dates, faits, témoins)\n2. Alerter le CSE / référent harcèlement\n3. Saisir l'inspection du travail\n4. Consulter le médecin du travail\n5. Saisir le Défenseur des droits\n\nPROTECTION :\n• Aucune sanction pour avoir témoigné\n• Nullité du licenciement discriminatoire\n\nPREUVE :\nLe salarié présente des éléments laissant supposer. L'employeur doit prouver que ce n'est pas du harcèlement."
+    },
+    {
+      "id": 5,
+      "title": "Droit de retrait - Mode d'emploi",
+      "content": "CONDITIONS (L.4131-1) :\n• Danger grave ET imminent\n• Pour sa vie ou sa santé\n• OU défectuosité des systèmes de protection\n\nPROCÉDURE :\n1. Alerter immédiatement l'employeur\n2. Se retirer de la situation\n3. L'employeur ne peut imposer la reprise tant que le danger persiste\n\nPROTECTION :\n• Aucune sanction possible\n• Aucune retenue sur salaire\n• Même si le danger n'était pas réel (appréciation raisonnable)\n\nATTENTION :\nLe droit de retrait est INDIVIDUEL. Ne pas confondre avec le droit de grève."
+    }
+  ],
+  "contacts": [
+    {
+      "id": 1,
+      "name": "Inspection du travail",
+      "role": "Contrôle & Conseil",
+      "organization": "DREETS",
+      "phone": "0 806 000 126",
+      "email": ""
+    },
+    {
+      "id": 2,
+      "name": "Médecine du travail",
+      "role": "Service de santé",
+      "organization": "SIST",
+      "phone": "01 XX XX XX XX",
+      "email": "contact@medecine-travail.fr"
+    },
+    {
+      "id": 3,
+      "name": "Union Départementale FO",
+      "role": "Fédération",
+      "organization": "Force Ouvrière",
+      "phone": "01 XX XX XX XX",
+      "email": "contact@ud-fo.org"
+    },
+    {
+      "id": 4,
+      "name": "Fédération FO Métaux",
+      "role": "Fédération nationale",
+      "organization": "Force Ouvrière",
+      "phone": "01 53 94 54 00",
+      "email": "fometaux@ffrometaux.fr"
+    },
+    {
+      "id": 5,
+      "name": "Délégué Syndical Central",
+      "role": "DSC",
+      "organization": "FO Site",
+      "phone": "06 XX XX XX XX",
+      "email": "dsc@fo-site.fr"
+    },
+    {
+      "id": 6,
+      "name": "Secrétaire CSE",
+      "role": "CSE",
+      "organization": "Comité Social et Économique",
+      "phone": "06 XX XX XX XX",
+      "email": "secretaire-cse@entreprise.fr"
+    },
+    {
+      "id": 7,
+      "name": "Responsable RH",
+      "role": "Ressources Humaines",
+      "organization": "Direction",
+      "phone": "01 XX XX XX XX",
+      "email": "rh@entreprise.fr"
+    },
+    {
+      "id": 8,
+      "name": "Responsable Sécurité",
+      "role": "HSE",
+      "organization": "Service Sécurité",
+      "phone": "01 XX XX XX XX",
+      "email": "securite@entreprise.fr"
+    },
+    {
+      "id": 9,
+      "name": "Référent Harcèlement",
+      "role": "CSE",
+      "organization": "Référent désigné",
+      "phone": "06 XX XX XX XX",
+      "email": ""
+    },
+    {
+      "id": 10,
+      "name": "Défenseur des droits",
+      "role": "Autorité indépendante",
+      "organization": "Discrimination / Droits",
+      "phone": "09 69 39 00 00",
+      "email": ""
+    },
+    {
+      "id": 11,
+      "name": "CARSAT",
+      "role": "Prévention risques",
+      "organization": "Sécurité sociale",
+      "phone": "3646",
+      "email": ""
+    },
+    {
+      "id": 12,
+      "name": "Avocat FO",
+      "role": "Conseil juridique",
+      "organization": "Cabinet partenaire",
+      "phone": "01 XX XX XX XX",
+      "email": "avocat@cabinet.fr"
+    },
+    {
+      "id": 13,
+      "name": "Conseil de Prud'hommes",
+      "role": "Juridiction",
+      "organization": "Tribunal",
+      "phone": "01 XX XX XX XX",
+      "email": ""
+    },
+    {
+      "id": 14,
+      "name": "CPAM",
+      "role": "Assurance maladie",
+      "organization": "Sécurité sociale",
+      "phone": "3646",
+      "email": ""
+    },
+    {
+      "id": 15,
+      "name": "Responsable Assemblage MB6",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    },
+    {
+      "id": 16,
+      "name": "Responsable Assemblage RG",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    },
+    {
+      "id": 17,
+      "name": "Responsable Assemblage EAT6",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    },
+    {
+      "id": 18,
+      "name": "Responsable Usinage MB6",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    },
+    {
+      "id": 19,
+      "name": "Responsable Usinage RG",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    },
+    {
+      "id": 20,
+      "name": "Responsable Usinage EAT6",
+      "role": "Chef de secteur",
+      "organization": "Production",
+      "phone": "Poste XXXX",
+      "email": ""
+    }
+  ]
+}

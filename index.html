@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#D32F2F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FO Délégués">
+    <title>App' Délégué FO</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root{--fo-red:#D32F2F;--fo-red-dark:#B71C1C;--fo-red-light:#FFCDD2;--white:#FFF;--gray-50:#FAFAFA;--gray-100:#F5F5F5;--gray-200:#EEE;--gray-300:#E0E0E0;--gray-500:#9E9E9E;--gray-600:#757575;--gray-700:#616161;--gray-800:#424242;--gray-900:#212121;--success:#43A047;--warning:#FB8C00;--info:#1976D2;--shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px rgba(0,0,0,.07);--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:24px}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:'Source Sans 3',-apple-system,sans-serif;background:var(--gray-100);color:var(--gray-900);min-height:100dvh}
+        .app{display:flex;flex-direction:column;min-height:100dvh}
+        .app-header{background:linear-gradient(135deg,var(--fo-red),var(--fo-red-dark));color:var(--white);padding:16px 20px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-md)}
+        .header-content{display:flex;align-items:center;gap:12px}
+        .header-logo{width:44px;height:44px;background:var(--white);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:var(--fo-red)}
+        .header-title{flex:1}
+        .header-title h1{font-size:20px;font-weight:700}
+        .header-title p{font-size:13px;opacity:.9;margin-top:2px}
+        .sync-btn{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .sync-btn.syncing svg{animation:spin 1s linear infinite}
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        .sync-btn svg{width:22px;height:22px;fill:var(--white)}
+        .app-content{flex:1;padding:20px;padding-bottom:100px}
+        .page{display:none;animation:fadeIn .3s ease}
+        .page.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .app-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--gray-200);padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom));display:flex;justify-content:space-around;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border:none;background:none;cursor:pointer;border-radius:var(--radius-md);color:var(--gray-500);min-width:64px}
+        .nav-item svg{width:24px;height:24px;fill:currentColor}
+        .nav-item span{font-size:11px;font-weight:600}
+        .nav-item.active{color:var(--fo-red);background:var(--fo-red-light)}
+        .card{background:var(--white);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+        .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+        .card-title{font-size:18px;font-weight:700;color:var(--gray-800);display:flex;align-items:center;gap:10px}
+        .card-title svg{width:22px;height:22px;fill:var(--fo-red)}
+        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+        .stat-card{background:var(--white);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow-sm);text-align:center}
+        .stat-value{font-size:32px;font-weight:900;color:var(--fo-red);line-height:1}
+        .stat-label{font-size:12px;color:var(--gray-600);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+        .stat-card.warning .stat-value{color:var(--warning)}
+        .stat-card.success .stat-value{color:var(--success)}
+        .quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .quick-action{background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-md);padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .2s}
+        .quick-action:hover{border-color:var(--fo-red);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+        .quick-action svg{width:32px;height:32px;fill:var(--fo-red)}
+        .quick-action span{font-size:14px;font-weight:600;color:var(--gray-700);text-align:center}
+        .list-item{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--gray-200)}
+        .list-item:last-child{border-bottom:none;padding-bottom:0}
+        .list-item:first-child{padding-top:0}
+        .list-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .list-icon.red{background:var(--fo-red-light)}
+        .list-icon.blue{background:#E3F2FD}
+        .list-icon.green{background:#E8F5E9}
+        .list-icon.orange{background:#FFF3E0}
+        .list-icon svg{width:22px;height:22px}
+        .list-icon.red svg{fill:var(--fo-red)}
+        .list-icon.blue svg{fill:var(--info)}
+        .list-icon.green svg{fill:var(--success)}
+        .list-icon.orange svg{fill:var(--warning)}
+        .list-content{flex:1;min-width:0}
+        .list-title{font-size:15px;font-weight:600;color:var(--gray-800);margin-bottom:4px}
+        .list-subtitle{font-size:13px;color:var(--gray-600)}
+        .list-meta{font-size:12px;color:var(--gray-500);margin-top:6px}
+        .list-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+        .list-badge.urgent{background:var(--fo-red-light);color:var(--fo-red-dark)}
+        .list-badge.pending{background:#FFF3E0;color:#E65100}
+        .list-badge.done{background:#E8F5E9;color:#2E7D32}
+        .form-group{margin-bottom:20px}
+        .form-label{display:block;font-size:14px;font-weight:600;color:var(--gray-700);margin-bottom:8px}
+        .form-input,.form-textarea,.form-select{width:100%;padding:14px 16px;border:2px solid var(--gray-200);border-radius:var(--radius-md);font-size:16px;font-family:inherit;background:var(--white)}
+        .form-input:focus,.form-textarea:focus,.form-select:focus{outline:none;border-color:var(--fo-red);box-shadow:0 0 0 4px var(--fo-red-light)}
+        .form-textarea{min-height:120px;resize:vertical}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border:none;border-radius:var(--radius-md);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
+        .btn svg{width:20px;height:20px;fill:currentColor}
+        .btn-primary{background:var(--fo-red);color:var(--white)}
+        .btn-primary:hover{background:var(--fo-red-dark)}
+        .btn-secondary{background:var(--gray-200);color:var(--gray-700)}
+        .btn-block{width:100%}
+        .btn-sm{padding:10px 16px;font-size:14px}
+        .hours-display{text-align:center;padding:30px 20px;background:linear-gradient(135deg,var(--fo-red),var(--fo-red-dark));border-radius:var(--radius-lg);color:var(--white);margin-bottom:20px}
+        .hours-value{font-size:64px;font-weight:900;line-height:1}
+        .hours-unit{font-size:24px;opacity:.9}
+        .hours-label{font-size:14px;opacity:.85;margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+        .hours-progress{margin-top:20px}
+        .progress-bar{height:10px;background:rgba(255,255,255,.3);border-radius:5px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--white);border-radius:5px;transition:width .5s}
+        .progress-label{display:flex;justify-content:space-between;font-size:13px;margin-top:8px;opacity:.9}
+        .hours-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .hours-btn{background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-md);padding:16px;font-size:18px;font-weight:700;color:var(--gray-700);cursor:pointer;transition:all .2s}
+        .hours-btn:hover{border-color:var(--fo-red);color:var(--fo-red)}
+        .hours-btn.subtract{color:var(--fo-red)}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;visibility:hidden;transition:all .3s}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal{background:var(--white);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s}
+        .modal-overlay.active .modal{transform:translateY(0)}
+        .modal-header{padding:20px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:10}
+        .modal-title{font-size:18px;font-weight:700}
+        .modal-close{width:36px;height:36px;border:none;background:var(--gray-100);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .modal-close svg{width:20px;height:20px;fill:var(--gray-600)}
+        .modal-body{padding:20px}
+        .tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto}
+        .tab{padding:10px 18px;border:none;background:var(--gray-100);border-radius:20px;font-size:14px;font-weight:600;color:var(--gray-600);cursor:pointer;white-space:nowrap}
+        .tab.active{background:var(--fo-red);color:var(--white)}
+        .empty-state{text-align:center;padding:40px 20px}
+        .empty-state svg{width:80px;height:80px;fill:var(--gray-300);margin-bottom:16px}
+        .empty-state h3{font-size:18px;color:var(--gray-600);margin-bottom:8px}
+        .empty-state p{font-size:14px;color:var(--gray-500)}
+        .accordion-item{border-bottom:1px solid var(--gray-200)}
+        .accordion-header{width:100%;padding:16px 0;border:none;background:none;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left}
+        .accordion-title{font-size:15px;font-weight:600;color:var(--gray-800)}
+        .accordion-icon{width:24px;height:24px;fill:var(--gray-500);transition:transform .3s}
+        .accordion-item.open .accordion-icon{transform:rotate(180deg)}
+        .accordion-content{max-height:0;overflow:hidden;transition:max-height .3s}
+        .accordion-item.open .accordion-content{max-height:2000px}
+        .accordion-body{padding-bottom:16px;font-size:14px;color:var(--gray-600);line-height:1.6;white-space:pre-wrap}
+        .contact-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--gray-50);border-radius:var(--radius-md);margin-bottom:12px}
+        .contact-avatar{width:50px;height:50px;border-radius:50%;background:var(--fo-red);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0}
+        .contact-info{flex:1;min-width:0}
+        .contact-name{font-size:15px;font-weight:600;color:var(--gray-800)}
+        .contact-role{font-size:13px;color:var(--gray-600);margin-top:2px}
+        .contact-actions{display:flex;gap:8px}
+        .contact-btn{width:40px;height:40px;border:none;background:var(--white);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+        .contact-btn svg{width:20px;height:20px;fill:var(--fo-red)}
+        .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--gray-900);color:var(--white);padding:14px 24px;border-radius:var(--radius-md);font-size:14px;font-weight:500;z-index:300;opacity:0;transition:all .3s;max-width:calc(100% - 40px);text-align:center}
+        .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+        .toast.success{background:var(--success)}
+        .toast.error{background:var(--fo-red)}
+        .search-box{position:relative;margin-bottom:20px}
+        .search-box input{width:100%;padding:14px 16px 14px 48px;border:2px solid var(--gray-200);border-radius:var(--radius-md);font-size:16px;font-family:inherit}
+        .search-box input:focus{outline:none;border-color:var(--fo-red)}
+        .search-box svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;fill:var(--gray-500)}
+        .section-title{font-size:13px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px}
+        .mb-4{margin-bottom:16px}
+        .mt-4{margin-top:16px}
+        @media(min-width:768px){.app-content{max-width:600px;margin:0 auto}.modal{border-radius:var(--radius-xl);margin:auto}}
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div class="header-content">
+            <div class="header-logo">FO</div>
+            <div class="header-title"><h1>App' Délégué FO</h1><p>Force Ouvrière</p></div>
+            <button class="sync-btn" id="sync-btn" title="Synchroniser"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
+        </div>
+    </header>
+    <main class="app-content">
+        <section class="page active" id="page-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="stat-hours">20</div><div class="stat-label">Heures restantes</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-interventions">0</div><div class="stat-label">Interventions</div></div>
+                <div class="stat-card warning"><div class="stat-value" id="stat-pending">0</div><div class="stat-label">En cours</div></div>
+                <div class="stat-card success"><div class="stat-value" id="stat-resolved">0</div><div class="stat-label">Résolus</div></div>
+            </div>
+            <div class="card"><div class="card-header"><h2 class="card-title"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>Prochains événements</h2></div><div id="upcoming-events"></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Actualités</h2></div><div id="news-list"></div></div>
+            <h3 class="section-title">Actions rapides</h3>
+            <div class="quick-actions">
+                <button class="quick-action" onclick="showModal('modal-intervention')"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Nouvelle intervention</span></button>
+                <button class="quick-action" onclick="showModal('modal-note')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>Note rapide</span></button>
+                <button class="quick-action" onclick="navigateTo('heures')"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Heures de délégation</span></button>
+                <button class="quick-action" onclick="navigateTo('fiches')"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg><span>Fiches pratiques</span></button>
+            </div>
+        </section>
+        <section class="page" id="page-calendrier"><div class="card"><div class="card-header"><h2 class="card-title"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>Calendrier syndical</h2></div><div class="tabs" id="calendar-tabs"><button class="tab active" data-filter="all">Tout</button><button class="tab" data-filter="cse">CSE</button><button class="tab" data-filter="reunion">Réunions</button><button class="tab" data-filter="formation">Formations</button></div><div id="calendar-list"></div></div></section>
+        <section class="page" id="page-heures">
+            <div class="hours-display"><div class="hours-value"><span id="hours-remaining">20</span><span class="hours-unit">h</span></div><div class="hours-label">Heures restantes ce mois</div><div class="hours-progress"><div class="progress-bar"><div class="progress-fill" id="hours-progress-fill" style="width:100%"></div></div><div class="progress-label"><span><span id="hours-used">0</span>h utilisées</span><span><span id="hours-quota">20</span>h quota</span></div></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">Ajouter des heures</h2></div><div class="hours-actions"><button class="hours-btn" onclick="addHours(0.5)">+0.5h</button><button class="hours-btn" onclick="addHours(1)">+1h</button><button class="hours-btn" onclick="addHours(2)">+2h</button><button class="hours-btn" onclick="addHours(4)">+4h</button><button class="hours-btn" onclick="addHours(7)">+7h</button><button class="hours-btn subtract" onclick="addHours(-1)">-1h</button></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">Historique</h2></div><div id="hours-history"></div></div>
+            <div class="card mt-4"><div class="form-group"><label class="form-label">Quota mensuel</label><input type="number" class="form-input" id="quota-input" value="20" min="1" max="200"></div><button class="btn btn-secondary btn-block" onclick="updateQuota()">Modifier le quota</button></div>
+        </section>
+        <section class="page" id="page-interventions"><div class="search-box"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Rechercher..." id="search-interventions"></div><div class="tabs" id="intervention-tabs"><button class="tab active" data-filter="all">Toutes</button><button class="tab" data-filter="pending">En cours</button><button class="tab" data-filter="done">Résolues</button></div><div class="tabs" id="sector-tabs" style="margin-top:-10px"><button class="tab active" data-sector="all">Tous secteurs</button><button class="tab" data-sector="assemblage">Assemblage</button><button class="tab" data-sector="usinage">Usinage</button></div><div class="tabs" id="shift-tabs" style="margin-top:-10px"><button class="tab active" data-shift="all">Toutes équipes</button><button class="tab" data-shift="matin">Matin</button><button class="tab" data-shift="apres_midi">Après-midi</button><button class="tab" data-shift="nuit">Nuit</button></div><button class="btn btn-primary btn-block mb-4" onclick="showModal('modal-intervention')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nouvelle intervention</button><div id="interventions-list"></div></section>
+        <section class="page" id="page-notes"><button class="btn btn-primary btn-block mb-4" onclick="showModal('modal-note')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nouvelle note</button><div id="notes-list"></div></section>
+        <section class="page" id="page-fiches"><div class="search-box"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Rechercher une fiche..." id="search-fiches"></div><div class="card"><div id="fiches-list"></div></div></section>
+        <section class="page" id="page-annuaire"><div class="search-box"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input type="text" placeholder="Rechercher un contact..." id="search-annuaire"></div><div id="annuaire-list"></div></section>
+    </main>
+    <nav class="app-nav">
+        <button class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg><span>Accueil</span></button>
+        <button class="nav-item" data-page="calendrier"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg><span>Calendrier</span></button>
+        <button class="nav-item" data-page="interventions"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>Actions</span></button>
+        <button class="nav-item" data-page="heures"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>Heures</span></button>
+        <button class="nav-item" data-page="more"><svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Plus</span></button>
+    </nav>
+</div>
+<div class="modal-overlay" id="modal-more"><div class="modal"><div class="modal-header"><h3 class="modal-title">Plus d'options</h3><button class="modal-close" onclick="hideModal('modal-more')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="modal-body"><button class="quick-action" style="width:100%;margin-bottom:12px" onclick="hideModal('modal-more');navigateTo('notes')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>Notes de terrain</span></button><button class="quick-action" style="width:100%;margin-bottom:12px" onclick="hideModal('modal-more');navigateTo('fiches')"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg><span>Fiches pratiques</span></button><button class="quick-action" style="width:100%;margin-bottom:12px" onclick="hideModal('modal-more');navigateTo('annuaire')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Annuaire</span></button><button class="quick-action" style="width:100%" onclick="exportData()"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span>Exporter mes données</span></button><button class="quick-action" style="width:100%;margin-top:12px;border-color:var(--fo-red)" onclick="changeProfile()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Changer de profil</span></button><button class="quick-action" style="width:100%;margin-top:12px;border-color:var(--gray-500)" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg><span>Se déconnecter</span></button></div></div></div>
+<div class="modal-overlay" id="modal-intervention"><div class="modal"><div class="modal-header"><h3 class="modal-title">Nouvelle intervention</h3><button class="modal-close" onclick="hideModal('modal-intervention')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="modal-body"><form id="form-intervention"><div class="form-group"><label class="form-label">Nom du salarié</label><input type="text" class="form-input" id="intervention-name" placeholder="Ex: Jean Dupont" required></div><div class="form-group"><label class="form-label">Secteur</label><select class="form-select" id="intervention-sector" required><option value="">-- Sélectionner --</option><optgroup label="Assemblage"><option value="assemblage_mb6">Assemblage MB6</option><option value="assemblage_rg">Assemblage RG</option><option value="assemblage_eat6">Assemblage EAT6</option></optgroup><optgroup label="Usinage"><option value="usinage_mb6">Usinage MB6</option><option value="usinage_rg">Usinage RG</option><option value="usinage_eat6">Usinage EAT6</option></optgroup><option value="autre">Autre</option></select></div><div class="form-group"><label class="form-label">Équipe / Horaire</label><select class="form-select" id="intervention-shift" required><option value="">-- Sélectionner --</option><option value="matin">Matin (5h-13h)</option><option value="apres_midi">Après-midi (13h-21h)</option><option value="nuit">Nuit (21h-5h)</option><option value="journee">Journée</option><option value="weekend">Week-end / SD</option><option value="vsd">VSD</option></select></div><div class="form-group"><label class="form-label">Poste / Ligne (optionnel)</label><input type="text" class="form-input" id="intervention-service" placeholder="Ex: Ligne 3, Poste contrôle..."></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="intervention-type"><option value="contrat">Contrat</option><option value="salaire">Salaire/Primes</option><option value="horaires">Horaires</option><option value="conges">Congés</option><option value="discipline">Disciplinaire</option><option value="harcelement">Harcèlement</option><option value="securite">Santé/Sécurité</option><option value="licenciement">Licenciement</option><option value="autre">Autre</option></select></div><div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="intervention-description" placeholder="Décrivez..." required></textarea></div><div class="form-group"><label class="form-label">Urgence</label><select class="form-select" id="intervention-urgency"><option value="normal">Normal</option><option value="urgent">Urgent</option></select></div><button type="submit" class="btn btn-primary btn-block">Enregistrer</button></form></div></div></div>
+<div class="modal-overlay" id="modal-note"><div class="modal"><div class="modal-header"><h3 class="modal-title">Nouvelle note</h3><button class="modal-close" onclick="hideModal('modal-note')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="modal-body"><form id="form-note"><div class="form-group"><label class="form-label">Titre</label><input type="text" class="form-input" id="note-title" required></div><div class="form-group"><label class="form-label">Contenu</label><textarea class="form-textarea" id="note-content" required></textarea></div><button type="submit" class="btn btn-primary btn-block">Enregistrer</button></form></div></div></div>
+<div class="modal-overlay" id="modal-intervention-detail"><div class="modal"><div class="modal-header"><h3 class="modal-title">Détail</h3><button class="modal-close" onclick="hideModal('modal-intervention-detail')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="modal-body" id="intervention-detail-content"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- Écran de connexion -->
+<div class="login-overlay" id="login-overlay">
+    <div class="login-container">
+        <div class="login-logo">FO</div>
+        <h1 class="login-title">App' Délégué FO</h1>
+        <p class="login-subtitle">Force Ouvrière</p>
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label">Votre nom</label>
+                <input type="text" class="form-input" id="login-name" placeholder="Ex: Jean Dupont" required minlength="2">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mot de passe</label>
+                <input type="password" class="form-input" id="login-password" placeholder="Mot de passe" required>
+                <p class="form-hint" id="password-hint"></p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Fonction (optionnel)</label>
+                <select class="form-select" id="login-role">
+                    <option value="delegue">Délégué syndical</option>
+                    <option value="elu_cse">Élu CSE</option>
+                    <option value="rss">RSS</option>
+                    <option value="secretaire">Secrétaire de section</option>
+                    <option value="tresorier">Trésorier</option>
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="login-btn">Commencer</button>
+        </form>
+        <p class="login-footer">Vos données restent sur votre appareil</p>
+    </div>
+</div>
+
+<style>
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,var(--fo-red),var(--fo-red-dark));display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.login-overlay.hidden{display:none}
+.login-container{background:var(--white);border-radius:var(--radius-xl);padding:40px 30px;width:100%;max-width:400px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-logo{width:80px;height:80px;background:var(--fo-red);border-radius:20px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:32px;color:var(--white);margin:0 auto 20px}
+.login-title{font-size:24px;font-weight:700;color:var(--gray-900);margin-bottom:8px}
+.login-subtitle{font-size:16px;color:var(--gray-600);margin-bottom:30px}
+.login-footer{font-size:12px;color:var(--gray-500);margin-top:20px}
+.login-container .form-group{text-align:left}
+.form-hint{font-size:12px;color:var(--gray-500);margin-top:6px}
+.form-hint.error{color:var(--fo-red)}
+.form-input.error{border-color:var(--fo-red)}
+</style>
+
+<script>
+const CONFIG={dataUrl:'data.json',defaultQuota:20,appPassword:'FO2026!'};
+let state={shared:{events:[],news:[],fiches:[],contacts:[],lastSync:null},personal:{interventions:[],notes:[],hours:{quota:CONFIG.defaultQuota,entries:[]}},user:{name:null,role:null,authenticated:false}};
+document.addEventListener('DOMContentLoaded',()=>{loadState();checkLogin();initNavigation();initForms();initTabs();initSearch();initLoginForm();updateUI();if(state.user.authenticated)syncData()});
+function checkLogin(){const overlay=document.getElementById('login-overlay');if(state.user.authenticated&&state.user.name){overlay.classList.add('hidden');updateUserDisplay()}else{state.user.authenticated=false;overlay.classList.remove('hidden')}}
+function initLoginForm(){const form=document.getElementById('login-form');const pwdInput=document.getElementById('login-password');const hint=document.getElementById('password-hint');form.addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('login-name').value.trim();const pwd=pwdInput.value;const role=document.getElementById('login-role').value;if(pwd!==CONFIG.appPassword){pwdInput.classList.add('error');hint.classList.add('error');hint.textContent='Mot de passe incorrect';return}pwdInput.classList.remove('error');hint.classList.remove('error');hint.textContent='';if(name.length>=2){state.user.name=name;state.user.role=role;state.user.authenticated=true;saveState();document.getElementById('login-overlay').classList.add('hidden');updateUserDisplay();syncData();showToast('Bienvenue '+name+' !','success')}});pwdInput.addEventListener('input',()=>{pwdInput.classList.remove('error');hint.classList.remove('error');hint.textContent=''})}
+function updateUserDisplay(){if(state.user.name){document.querySelector('.header-title p').textContent=state.user.name+' • Force Ouvrière'}};
+function loadState(){const s=localStorage.getItem('fo-delegues-state');if(s)try{state={...state,...JSON.parse(s)}}catch(e){}}
+function saveState(){localStorage.setItem('fo-delegues-state',JSON.stringify(state))}
+function initNavigation(){document.querySelectorAll('.nav-item').forEach(i=>{i.addEventListener('click',()=>{const p=i.dataset.page;if(p==='more')showModal('modal-more');else navigateTo(p)})})}
+function navigateTo(p){document.querySelectorAll('.nav-item').forEach(i=>i.classList.toggle('active',i.dataset.page===p));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const t=document.getElementById('page-'+p);if(t)t.classList.add('active');hideModal('modal-more')}
+function showModal(id){document.getElementById(id).classList.add('active')}
+function hideModal(id){document.getElementById(id).classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active')})});
+function showToast(m,t=''){const toast=document.getElementById('toast');toast.textContent=m;toast.className='toast show '+t;setTimeout(()=>toast.classList.remove('show'),3000)}
+async function syncData(){const btn=document.getElementById('sync-btn');btn.classList.add('syncing');try{const r=await fetch(CONFIG.dataUrl+'?t='+Date.now());if(r.ok){const d=await r.json();state.shared={...state.shared,...d,lastSync:new Date().toISOString()};saveState();updateUI();showToast('Synchronisé','success')}}catch(e){showToast(state.shared.lastSync?'Mode hors-ligne':'Erreur sync','error')}btn.classList.remove('syncing')}
+document.getElementById('sync-btn').addEventListener('click',syncData);
+function initForms(){document.getElementById('form-intervention').addEventListener('submit',e=>{e.preventDefault();const i={id:Date.now(),date:new Date().toISOString(),name:document.getElementById('intervention-name').value,sector:document.getElementById('intervention-sector').value,shift:document.getElementById('intervention-shift').value,service:document.getElementById('intervention-service').value,type:document.getElementById('intervention-type').value,description:document.getElementById('intervention-description').value,urgency:document.getElementById('intervention-urgency').value,status:'pending'};state.personal.interventions.unshift(i);saveState();updateUI();e.target.reset();hideModal('modal-intervention');showToast('Enregistré','success')});document.getElementById('form-note').addEventListener('submit',e=>{e.preventDefault();const n={id:Date.now(),date:new Date().toISOString(),title:document.getElementById('note-title').value,content:document.getElementById('note-content').value};state.personal.notes.unshift(n);saveState();updateUI();e.target.reset();hideModal('modal-note');showToast('Enregistré','success')})}
+function initTabs(){document.querySelectorAll('.tabs').forEach(c=>{c.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{c.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');updateUI()})})});document.querySelectorAll('#sector-tabs .tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('#sector-tabs .tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');updateUI()})})}
+function initSearch(){['search-interventions','search-fiches','search-annuaire'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateUI)})}
+function addHours(a){state.personal.hours.entries.push({id:Date.now(),date:new Date().toISOString(),amount:a});saveState();updateUI();showToast((a>0?'+':'')+a+'h','success')}
+function updateQuota(){const q=parseInt(document.getElementById('quota-input').value);if(q>0){state.personal.hours.quota=q;saveState();updateUI();showToast('Quota mis à jour','success')}}
+function getCurrentMonthHours(){const n=new Date();return state.personal.hours.entries.filter(e=>{const d=new Date(e.date);return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()}).reduce((s,e)=>s+e.amount,0)}
+function updateUI(){updateDashboard();updateCalendar();updateHours();updateInterventions();updateNotes();updateFiches();updateAnnuaire()}
+function updateDashboard(){const u=getCurrentMonthHours(),r=state.personal.hours.quota-u;document.getElementById('stat-hours').textContent=Math.max(0,r);document.getElementById('stat-interventions').textContent=state.personal.interventions.length;document.getElementById('stat-pending').textContent=state.personal.interventions.filter(i=>i.status==='pending').length;document.getElementById('stat-resolved').textContent=state.personal.interventions.filter(i=>i.status==='done').length;const ec=document.getElementById('upcoming-events'),fe=state.shared.events.filter(e=>new Date(e.date)>=new Date()).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,3);ec.innerHTML=fe.length?fe.map(e=>`<div class="list-item"><div class="list-icon ${getEventColor(e.type)}">${getEventIcon(e.type)}</div><div class="list-content"><div class="list-title">${esc(e.title)}</div><div class="list-subtitle">${formatDateLong(e.date)}${e.time?' à '+e.time:''}</div>${e.location?`<div class="list-meta">📍 ${esc(e.location)}</div>`:''}</div></div>`).join(''):'<div class="empty-state"><h3>Aucun événement</h3><p>Synchronisez pour voir le calendrier</p></div>';const nc=document.getElementById('news-list');nc.innerHTML=state.shared.news.length?state.shared.news.slice(0,3).map(n=>`<div class="list-item"><div class="list-icon red"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><div class="list-content"><div class="list-title">${esc(n.title)}</div><div class="list-subtitle">${esc(n.summary||'')}</div><div class="list-meta">${formatDate(n.date)}</div></div></div>`).join(''):'<div class="empty-state"><h3>Aucune actualité</h3></div>'}
+function updateCalendar(){const c=document.getElementById('calendar-list'),f=document.querySelector('#calendar-tabs .tab.active')?.dataset.filter||'all';let ev=state.shared.events.filter(e=>new Date(e.date)>=new Date(Date.now()-86400000)).sort((a,b)=>new Date(a.date)-new Date(b.date));if(f!=='all')ev=ev.filter(e=>e.type===f);c.innerHTML=ev.length?ev.map(e=>`<div class="list-item"><div class="list-icon ${getEventColor(e.type)}">${getEventIcon(e.type)}</div><div class="list-content"><div class="list-title">${esc(e.title)}</div><div class="list-subtitle">${formatDateLong(e.date)}${e.time?' à '+e.time:''}</div>${e.location?`<div class="list-meta">📍 ${esc(e.location)}</div>`:''}</div></div>`).join(''):'<div class="empty-state"><h3>Aucun événement</h3></div>'}
+function updateHours(){const q=state.personal.hours.quota,u=getCurrentMonthHours(),r=Math.max(0,q-u);document.getElementById('hours-remaining').textContent=r;document.getElementById('hours-used').textContent=u;document.getElementById('hours-quota').textContent=q;document.getElementById('hours-progress-fill').style.width=Math.min(100,(r/q)*100)+'%';document.getElementById('quota-input').value=q;const c=document.getElementById('hours-history'),n=new Date(),me=state.personal.hours.entries.filter(e=>{const d=new Date(e.date);return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()}).sort((a,b)=>new Date(b.date)-new Date(a.date));c.innerHTML=me.length?me.map(e=>`<div class="list-item"><div class="list-icon ${e.amount>0?'blue':'orange'}"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg></div><div class="list-content"><div class="list-title">${e.amount>0?'+':''}${e.amount}h</div><div class="list-subtitle">${formatDate(e.date)}</div></div><button class="btn btn-sm btn-secondary" onclick="deleteHourEntry(${e.id})">✕</button></div>`).join(''):'<div class="empty-state"><h3>Aucune heure</h3></div>'}
+function deleteHourEntry(id){state.personal.hours.entries=state.personal.hours.entries.filter(e=>e.id!==id);saveState();updateUI()}
+function updateInterventions(){const c=document.getElementById('interventions-list'),f=document.querySelector('#intervention-tabs .tab.active')?.dataset.filter||'all',sec=document.querySelector('#sector-tabs .tab.active')?.dataset.sector||'all',sh=document.querySelector('#shift-tabs .tab.active')?.dataset.shift||'all',s=(document.getElementById('search-interventions')?.value||'').toLowerCase();let iv=state.personal.interventions;if(f!=='all')iv=iv.filter(i=>i.status===f);if(sec!=='all')iv=iv.filter(i=>i.sector&&i.sector.startsWith(sec));if(sh!=='all')iv=iv.filter(i=>i.shift===sh);if(s)iv=iv.filter(i=>i.name.toLowerCase().includes(s)||i.description.toLowerCase().includes(s)||(i.sector&&getSectorLabel(i.sector).toLowerCase().includes(s)));c.innerHTML=iv.length?iv.map(i=>`<div class="card" onclick="showInterventionDetail(${i.id})" style="cursor:pointer"><div class="list-item" style="padding:0;border:none"><div class="list-icon ${i.urgency==='urgent'?'orange':'blue'}"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><div class="list-content"><div class="list-title">${esc(i.name)}</div><div class="list-subtitle">${getSectorLabel(i.sector)}${i.shift?' • '+getShiftLabel(i.shift):''}${i.service?' • '+esc(i.service):''}</div><div class="list-meta">${getTypeLabel(i.type)} • ${formatDate(i.date)}</div></div><span class="list-badge ${i.status==='done'?'done':i.urgency==='urgent'?'urgent':'pending'}">${i.status==='done'?'Résolu':i.urgency==='urgent'?'Urgent':'En cours'}</span></div></div>`).join(''):'<div class="empty-state"><h3>Aucune intervention</h3></div>'}
+function showInterventionDetail(id){const i=state.personal.interventions.find(x=>x.id===id);if(!i)return;document.getElementById('intervention-detail-content').innerHTML=`<p><strong>Salarié:</strong> ${esc(i.name)}</p><p><strong>Secteur:</strong> ${getSectorLabel(i.sector)||'-'}</p><p><strong>Équipe:</strong> ${getShiftLabel(i.shift)||'-'}</p><p><strong>Poste/Ligne:</strong> ${esc(i.service||'-')}</p><p><strong>Type:</strong> ${getTypeLabel(i.type)}</p><p><strong>Date:</strong> ${formatDateLong(i.date)}</p><p style="margin-top:16px"><strong>Description:</strong></p><p style="white-space:pre-wrap">${esc(i.description)}</p><div style="display:flex;gap:10px;margin-top:24px"><button class="btn btn-primary" style="flex:1" onclick="toggleStatus(${id})">${i.status==='done'?'Rouvrir':'Marquer résolu'}</button><button class="btn btn-secondary" onclick="deleteIntervention(${id})">Supprimer</button></div>`;showModal('modal-intervention-detail')}
+function toggleStatus(id){const i=state.personal.interventions.find(x=>x.id===id);if(i){i.status=i.status==='done'?'pending':'done';saveState();updateUI();hideModal('modal-intervention-detail');showToast('Mis à jour','success')}}
+function deleteIntervention(id){if(confirm('Supprimer?')){state.personal.interventions=state.personal.interventions.filter(i=>i.id!==id);saveState();updateUI();hideModal('modal-intervention-detail')}}
+function updateNotes(){const c=document.getElementById('notes-list');c.innerHTML=state.personal.notes.length?state.personal.notes.map(n=>`<div class="card"><div class="card-header" style="margin-bottom:8px"><h3 class="card-title" style="font-size:16px">${esc(n.title)}</h3><button class="btn btn-sm btn-secondary" onclick="deleteNote(${n.id})">✕</button></div><p style="white-space:pre-wrap;color:var(--gray-600)">${esc(n.content)}</p><div class="list-meta mt-4">${formatDate(n.date)}</div></div>`).join(''):'<div class="empty-state"><h3>Aucune note</h3></div>'}
+function deleteNote(id){if(confirm('Supprimer?')){state.personal.notes=state.personal.notes.filter(n=>n.id!==id);saveState();updateUI()}}
+function updateFiches(){const c=document.getElementById('fiches-list'),s=(document.getElementById('search-fiches')?.value||'').toLowerCase();let fi=state.shared.fiches;if(s)fi=fi.filter(f=>f.title.toLowerCase().includes(s)||(f.content&&f.content.toLowerCase().includes(s)));c.innerHTML=fi.length?fi.map(f=>`<div class="accordion-item"><button class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span class="accordion-title">${esc(f.title)}</span><svg class="accordion-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg></button><div class="accordion-content"><div class="accordion-body">${esc(f.content||'')}</div></div></div>`).join(''):'<div class="empty-state"><h3>Aucune fiche</h3></div>'}
+function updateAnnuaire(){const c=document.getElementById('annuaire-list'),s=(document.getElementById('search-annuaire')?.value||'').toLowerCase();let co=state.shared.contacts;if(s)co=co.filter(x=>x.name.toLowerCase().includes(s)||(x.role&&x.role.toLowerCase().includes(s)));c.innerHTML=co.length?co.map(x=>`<div class="contact-card"><div class="contact-avatar">${getInitials(x.name)}</div><div class="contact-info"><div class="contact-name">${esc(x.name)}</div><div class="contact-role">${esc(x.role||'')}${x.organization?' • '+esc(x.organization):''}</div></div><div class="contact-actions">${x.phone?`<a href="tel:${x.phone}" class="contact-btn"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>`:''}${x.email?`<a href="mailto:${x.email}" class="contact-btn"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>`:''}</div></div>`).join(''):'<div class="empty-state"><h3>Aucun contact</h3></div>'}
+function exportData(){const d={exportDate:new Date().toISOString(),user:state.user,interventions:state.personal.interventions,notes:state.personal.notes,hours:state.personal.hours};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='fo-export-'+new Date().toISOString().split('T')[0]+'.json';a.click();URL.revokeObjectURL(u);hideModal('modal-more');showToast('Exporté','success')}
+function changeProfile(){if(confirm('Changer de profil ?\nVous devrez ressaisir le mot de passe.')){hideModal('modal-more');state.user.authenticated=false;saveState();document.getElementById('login-name').value=state.user.name||'';document.getElementById('login-password').value='';document.getElementById('login-role').value=state.user.role||'delegue';document.getElementById('password-hint').textContent='';document.getElementById('login-overlay').classList.remove('hidden')}}
+function logout(){if(confirm('Se déconnecter ?\nVos données seront conservées.')){hideModal('modal-more');state.user.authenticated=false;saveState();document.getElementById('login-name').value='';document.getElementById('login-password').value='';document.getElementById('password-hint').textContent='';document.getElementById('login-overlay').classList.remove('hidden')}}
+function formatDate(d){return new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}
+function formatDateLong(d){return new Date(d).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
+function esc(t){if(!t)return'';const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function getInitials(n){return n.split(' ').map(x=>x[0]).join('').toUpperCase().substring(0,2)}
+function getTypeLabel(t){const l={contrat:'Contrat',salaire:'Salaire',horaires:'Horaires',conges:'Congés',discipline:'Disciplinaire',harcelement:'Harcèlement',securite:'Sécurité',licenciement:'Licenciement',autre:'Autre'};return l[t]||t}
+function getSectorLabel(s){const l={assemblage_mb6:'Assemblage MB6',assemblage_rg:'Assemblage RG',assemblage_eat6:'Assemblage EAT6',usinage_mb6:'Usinage MB6',usinage_rg:'Usinage RG',usinage_eat6:'Usinage EAT6',autre:'Autre'};return l[s]||s||''}
+function getShiftLabel(s){const l={matin:'Matin',apres_midi:'Après-midi',nuit:'Nuit',journee:'Journée',weekend:'Week-end',vsd:'VSD'};return l[s]||s||''}
+function getSectorLabel(s){const l={'assemblage-mb6':'Assemblage MB6','assemblage-rg':'Assemblage RG','assemblage-eat6':'Assemblage EAT6','usinage-mb6':'Usinage MB6','usinage-rg':'Usinage RG','usinage-eat6':'Usinage EAT6','autre':'Autre'};return l[s]||s||''}
+function getEventColor(t){return{cse:'red',reunion:'blue',formation:'green',ag:'orange'}[t]||'blue'}
+function getEventIcon(t){const i={cse:'<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg>',reunion:'<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>',formation:'<svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>',ag:'<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>'};return i[t]||i.reunion}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW error',e));
+</script>
+</body>
+</html>
